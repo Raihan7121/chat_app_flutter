@@ -1,6 +1,10 @@
+import 'package:chat_app/screens/auth/login_screen.dart';
 import 'package:flutter/material.dart';
 
 import 'screens/home_screen.dart';
+
+//global jobject size
+late Size mq;
 
 void main() {
   runApp(const MyApp());
@@ -26,6 +30,6 @@ class MyApp extends StatelessWidget {
             ),
       backgroundColor: Color.fromARGB(255, 50, 17, 216),)),
       
-      home: HomeScreen());
+      home: LoginScreen());
   }
 }

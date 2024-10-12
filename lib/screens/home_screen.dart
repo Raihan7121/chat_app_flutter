@@ -24,7 +24,7 @@ class  _HomeScreenState extends State <HomeScreen> {
         ],
         
         ),
-        backgroundColor: Color.fromARGB(26, 155, 191, 13),
+        backgroundColor: Color.fromARGB(26, 18, 251, 88),
         floatingActionButton: Padding(
           padding: const EdgeInsets.only(bottom: 10),
           child: FloatingActionButton(onPressed: (){},child: const Icon(Icons.add_comment_rounded),),
