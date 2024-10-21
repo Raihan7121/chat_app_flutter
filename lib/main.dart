@@ -1,13 +1,24 @@
 import 'package:chat_app/screens/auth/login_screen.dart';
+import 'package:chat_app/screens/splash_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import 'screens/home_screen.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'firebase_options.dart';
 
 //global jobject size
 late Size mq;
 
 void main() {
-  runApp(const MyApp());
+  WidgetsFlutterBinding.ensureInitialized();
+  SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
+  SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp,DeviceOrientation.portraitDown])
+  .then((value) {
+        _initializeFirebase();
+        runApp(const MyApp());
+  });
+  
 }
 
 class MyApp extends StatelessWidget {
@@ -30,6 +41,12 @@ class MyApp extends StatelessWidget {
             ),
       backgroundColor: Color.fromARGB(255, 50, 17, 216),)),
       
-      home: LoginScreen());
+      home: SplashScreen());
   }
+}
+
+_initializeFirebase() async {
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+);
 }
