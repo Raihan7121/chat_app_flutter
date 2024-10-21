@@ -28,11 +28,17 @@ class  _LoginScreenState extends State <LoginScreen> {
     });
   }
 
+bool isSignIn=false;
+
   _handleGoogleBtnClick(){
+
+    if(isSignIn)return;
+    
+    isSignIn=true;
+
     _signInWithGoogle().then( (user ) {
 
-      log('\nUser: ${user.user}');
-      log('\nUserAdditionalInfo: ${user.additionalUserInfo}');
+     
 
       Navigator.pushReplacement(context,MaterialPageRoute(builder: (_) => const HomeScreen()));
     });

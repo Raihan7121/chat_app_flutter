@@ -16,7 +16,7 @@ class  _SplashScreenState extends State <SplashScreen> {
   @override
   void initState(){
       super.initState();
-      Future.delayed(const Duration(microseconds: 2000), (){
+      Future.delayed(const Duration(seconds: 5), (){
         SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
         SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(statusBarColor: Colors.transparent));
         Navigator.pushReplacement(

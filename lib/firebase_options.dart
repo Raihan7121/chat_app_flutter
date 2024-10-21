@@ -51,7 +51,7 @@ class DefaultFirebaseOptions {
 
   static const FirebaseOptions android = FirebaseOptions(
     apiKey: 'AIzaSyDPeVjDczqrF--Ld62OUKffMYKc0I1OyCc',
-    appId: '1:889669246831:android:26163068db0a9f651bd29a',
+    appId: '1:889669246831:android:6bceb97771392c7e1bd29a',
     messagingSenderId: '889669246831',
     projectId: 'wechat-a4729',
     storageBucket: 'wechat-a4729.appspot.com',
