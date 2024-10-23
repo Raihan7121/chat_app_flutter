@@ -1,6 +1,6 @@
 import 'dart:developer';
 import 'dart:io';
-import 'dart:js_interop';
+//import 'dart:js_interop';
 
 import 'package:chat_app/api/apis.dart';
 import 'package:chat_app/helper/dialogs.dart';
@@ -37,6 +37,7 @@ bool isSignIn=false;
   _handleGoogleBtnClick(){
 
     if(isSignIn)return;
+    Navigator.pop(context);
     
     isSignIn=true;
     Dialogs.showProcessBar(context);
@@ -54,6 +55,16 @@ bool isSignIn=false;
     });
 
     
+  }
+
+  _signUpBtnClick() async {
+    if((await APIs.userExists())){
+      Navigator.pushReplacement(context,MaterialPageRoute(builder: (_) => const HomeScreen()));
+    }else{
+      await APIs.createUser().then((value) {
+        Navigator.pushReplacement(context,MaterialPageRoute(builder: (_) => const HomeScreen()));
+      });
+    }
   }
 
   
@@ -77,7 +88,9 @@ Future<UserCredential?> _signInWithGoogle() async {
       return await APIs.auth.signInWithCredential(credential);
   }catch (e){
     log('\n_signInWithGoogle: $e');
-    Dialogs.showSnackbar(context, 'Something went wrong (check Internet)');
+    isSignIn=false;
+    Dialogs.showSnackbar(context, 'Something went wrong (check Internet) ');
+    //Dialogs.showSnackbar(context, '$e');
     return null;
   }
 }
