@@ -1,5 +1,9 @@
 import 'dart:developer';
+import 'dart:io';
+import 'dart:js_interop';
 
+import 'package:chat_app/api/apis.dart';
+import 'package:chat_app/helper/dialogs.dart';
 import 'package:chat_app/main.dart';
 import 'package:chat_app/screens/home_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -35,12 +39,18 @@ bool isSignIn=false;
     if(isSignIn)return;
     
     isSignIn=true;
+    Dialogs.showProcessBar(context);
 
     _signInWithGoogle().then( (user ) {
+      Navigator.pop(context);
 
-     
+     if( user != null){
+      log('\nUser: ${user.user}');
+      log('\nUserAdditonalInfo: ${user.additionalUserInfo}');
+        Navigator.pushReplacement(context,MaterialPageRoute(builder: (_) => const HomeScreen()));
+     }
 
-      Navigator.pushReplacement(context,MaterialPageRoute(builder: (_) => const HomeScreen()));
+      
     });
 
     
@@ -48,21 +58,28 @@ bool isSignIn=false;
 
   
 
-Future<UserCredential> _signInWithGoogle() async {
-  // Trigger the authentication flow
-  final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
+Future<UserCredential?> _signInWithGoogle() async {
+  try{
+      await InternetAddress.lookup('google.com');
+        // Trigger the authentication flow
+      final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
 
-  // Obtain the auth details from the request
-  final GoogleSignInAuthentication? googleAuth = await googleUser?.authentication;
+      // Obtain the auth details from the request
+      final GoogleSignInAuthentication? googleAuth = await googleUser?.authentication;
 
-  // Create a new credential
-  final credential = GoogleAuthProvider.credential(
-    accessToken: googleAuth?.accessToken,
-    idToken: googleAuth?.idToken,
-  );
+      // Create a new credential
+      final credential = GoogleAuthProvider.credential(
+        accessToken: googleAuth?.accessToken,
+        idToken: googleAuth?.idToken,
+      );
 
-  // Once signed in, return the UserCredential
-  return await FirebaseAuth.instance.signInWithCredential(credential);
+      // Once signed in, return the UserCredential
+      return await APIs.auth.signInWithCredential(credential);
+  }catch (e){
+    log('\n_signInWithGoogle: $e');
+    Dialogs.showSnackbar(context, 'Something went wrong (check Internet)');
+    return null;
+  }
 }
 
 
