@@ -23,6 +23,12 @@ class  _HomeScreenState extends State <HomeScreen> {
 
  List<ChatUser> list = [];
 
+@override
+ void initState(){
+  super.initState();
+  APIs.getSelfInfo();
+ }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -34,8 +40,10 @@ class  _HomeScreenState extends State <HomeScreen> {
           IconButton(onPressed: (){}, icon: const Icon(Icons.search)),
           //more features button
           IconButton(onPressed: (){
-            Navigator.push(context, MaterialPageRoute(builder: (_) => ProfileScreen(user: list[0])));
-          }, icon: const Icon(Icons.more_vert)),
+            Navigator.push(context, MaterialPageRoute(builder: (_) => ProfileScreen(user: APIs.me)));
+      },
+        icon: const Icon(Icons.more_vert)),
+
         ],
         
         ),
@@ -48,7 +56,7 @@ class  _HomeScreenState extends State <HomeScreen> {
           },child: const Icon(Icons.add_comment_rounded),),
         ),
         body: StreamBuilder(
-          stream: APIs.firestore.collection('users').snapshots(),
+          stream: APIs.getAllUsers(),
           builder: (context ,snapshot){
             if (snapshot.connectionState == ConnectionState.waiting) {
             return const AlertDialog(
@@ -78,12 +86,8 @@ class  _HomeScreenState extends State <HomeScreen> {
             if(snapshot.hasData){
               final data = snapshot.data?.docs;
 
-              list = 
-                  data?.map((e) => ChatUser.fromJson(e.data())).toList() ?? [];
-              // for(var i in data!){
-              //   log('Data: ${jsonEncode(i.data())}');
-              //   list.add(i.data()['name']);
-              // }
+              list =data?.map((e) => ChatUser.fromJson(e.data())).toList() ?? [];
+            
             }
             if(list.isNotEmpty){
                 return ListView.builder(

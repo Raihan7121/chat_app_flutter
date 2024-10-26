@@ -1,8 +1,10 @@
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:chat_app/api/apis.dart';
+import 'package:chat_app/helper/dialogs.dart';
 import 'package:chat_app/main.dart';
 import 'package:chat_app/models/chat_user.dart';
+import 'package:chat_app/screens/auth/login.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 //import '../widgets/chat_user_card.dart';
@@ -32,17 +34,31 @@ class  _ProfileScreenState extends State <ProfileScreen> {
         child: Column(
           children: [
             SizedBox(width: mq.width,height: mq.height* .03,),
-            ClipRRect(
-                    borderRadius: BorderRadius.circular(mq.height*.1),
-                    child: CachedNetworkImage(
-                        height: mq.height * .2,
-                        width: mq.height * .2,
-                        fit: BoxFit.fill,
-                        imageUrl: "http://via.placeholder.com/350x150",
-                        placeholder: (context, url) => CircularProgressIndicator(),
-                        errorWidget: (context, url, error) => Icon(Icons.error),
-                    ),
-                  ),
+            Stack(
+              children: [
+                ClipRRect(
+                        borderRadius: BorderRadius.circular(mq.height*.1),
+                        child: CachedNetworkImage(
+                            height: mq.height * .2,
+                            width: mq.height * .2,
+                            fit: BoxFit.fill,
+                            imageUrl: "http://via.placeholder.com/350x150",
+                            placeholder: (context, url) => CircularProgressIndicator(),
+                            errorWidget: (context, url, error) => Icon(Icons.error),
+                        ),
+                      ),
+                      Positioned(
+                        bottom: 0,
+                        right: 0,
+                        child: MaterialButton(
+                          elevation: 1,
+                          onPressed: (){},
+                        shape: CircleBorder(),
+                        color: Colors.white,
+                        child: Icon(Icons.edit),),
+                      )
+              ],
+            ),
 
                   SizedBox(height: mq.height* .03,),
 
@@ -89,8 +105,17 @@ class  _ProfileScreenState extends State <ProfileScreen> {
           child: FloatingActionButton.extended(
             backgroundColor: Colors.redAccent,
             onPressed: () async {
-            await APIs.auth.signOut(); 
-           // await GoogleSignIn().signOut();
+            
+            Dialogs.showProcessBar(context);
+            await APIs.auth.signOut().then((Value) async{
+              // await GoogleSignIn().signOut();
+              //pop up dialog
+              Navigator.pop(context);
+              //pop up login screen
+              Navigator.pop(context);
+              Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => LoginScreen()));
+            }); 
+           
           },
           icon: const Icon(Icons.logout),
           label: Text('logout'),),

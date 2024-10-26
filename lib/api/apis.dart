@@ -1,9 +1,12 @@
+import 'dart:developer';
+
 import 'package:chat_app/main.dart';
 import 'package:chat_app/models/chat_user.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 class APIs{
+  static late ChatUser me;
   //for authentication
   static FirebaseAuth auth = FirebaseAuth.instance;
   //for accessing cujrrent user
@@ -14,6 +17,17 @@ class APIs{
   static Future<bool> userExists() async{
     return (await firestore.collection('users').doc(appUser.email).get()).exists;
   }
+
+static Future<void> getSelfInfo() async{
+    await firestore.collection('users').doc(appUser.email).get().then((user) async {
+      if(user.exists){
+        me = ChatUser.fromJson(user.data()!);
+      }else {
+        await createUser().then((value) => getSelfInfo());
+      }
+    });
+  }
+
   //for creating a new user 
   static Future<void> createUser() async{
     final time = DateTime.now().microsecondsSinceEpoch.toString();
@@ -30,5 +44,10 @@ class APIs{
       password: appUser.password.toString());
 
     return await firestore.collection('users').doc(appUser.email).set(chatUser.toJson());
+  }
+
+  static Stream<QuerySnapshot<Map<String,dynamic>>> getAllUsers(){
+   // log(ChatUser.fromJson(firestore.collection('users').where('email', isEqualTo: appUser.email).snapshots()));
+    return firestore.collection('users').where('email', isNotEqualTo: appUser.email).snapshots();
   }
 }

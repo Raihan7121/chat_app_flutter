@@ -59,8 +59,8 @@ class _ChatUserCardState extends State<ChatUserCard> {
                       errorWidget: (context, url, error) => Icon(Icons.error),
                   ),
                 ),
-                 title: Text("arrr"),
-                 subtitle: Text("hooooo",maxLines: 1,),
+                 title: Text(widget.user.email),
+                 subtitle: Text(widget.user.password,maxLines: 1,),
                 //trailing: Icon(Icons.arrow_forward),
                 trailing: Container(
                   width: 15,
