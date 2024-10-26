@@ -50,4 +50,12 @@ static Future<void> getSelfInfo() async{
    // log(ChatUser.fromJson(firestore.collection('users').where('email', isEqualTo: appUser.email).snapshots()));
     return firestore.collection('users').where('email', isNotEqualTo: appUser.email).snapshots();
   }
+//for updste user information
+ static Future<void> updateUserInfo() async{
+    await firestore.collection('users').doc(appUser.email).update({
+      'name':me.name,
+      'about': me.about});
+  }
+
+
 }
