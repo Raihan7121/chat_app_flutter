@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:chat_app/main.dart';
 import 'package:chat_app/models/chat_user.dart';
 import 'package:flutter/cupertino.dart';
@@ -44,13 +45,31 @@ class _ChatUserCardState extends State<ChatUserCard> {
             child: InkWell(
               onTap: () {
                 // Action when tapped
-                print('Card tapped');
+                //print('Card tapped');
               },
               child: ListTile(
-                leading: Icon(Icons.account_circle),
-                title: Text(widget.user.name),
-                subtitle: Text(widget.user.about,maxLines: 1,),
-                trailing: Icon(Icons.arrow_forward),
+               // leading: Icon(Icons.account_circle),
+                leading:ClipRRect(
+                  borderRadius: BorderRadius.circular(mq.height*.3),
+                  child: CachedNetworkImage(
+                      height: mq.height * .055,
+                      width: mq.height * .055,
+                      imageUrl: "http://via.placeholder.com/350x150",
+                      placeholder: (context, url) => CircularProgressIndicator(),
+                      errorWidget: (context, url, error) => Icon(Icons.error),
+                  ),
+                ),
+                 title: Text("arrr"),
+                 subtitle: Text("hooooo",maxLines: 1,),
+                //trailing: Icon(Icons.arrow_forward),
+                trailing: Container(
+                  width: 15,
+                  height: 15,
+                  decoration: BoxDecoration(
+                    color: Colors.greenAccent.shade400,
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                ),
               ),
             ),
           );

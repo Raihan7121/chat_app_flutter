@@ -1,4 +1,7 @@
 
+import 'package:chat_app/models/chat_user.dart';
+//import 'package:chat_app/screens/auth/login.dart';
+import 'package:chat_app/screens/auth/login_screen.dart';
 import 'package:chat_app/screens/splash_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -9,6 +12,8 @@ import 'firebase_options.dart';
 
 //global jobject size
 late Size mq;
+late ChatUser appUser;
+
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -41,7 +46,7 @@ class MyApp extends StatelessWidget {
             ),
       backgroundColor: Color.fromARGB(255, 50, 17, 216),)),
       
-      home: const SplashScreen());
+      home: LoginScreen());
   }
 }
 

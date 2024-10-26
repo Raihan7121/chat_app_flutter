@@ -5,6 +5,7 @@ import 'dart:io';
 import 'package:chat_app/api/apis.dart';
 import 'package:chat_app/helper/dialogs.dart';
 import 'package:chat_app/main.dart';
+import 'package:chat_app/models/chat_user.dart';
 import 'package:chat_app/screens/home_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -19,6 +20,17 @@ class LoginScreen extends StatefulWidget {
 }
 
 class  _LoginScreenState extends State <LoginScreen> {
+
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+
+  @override
+  void dispose() {
+    _emailController.dispose();
+    _passwordController.dispose();
+    super.dispose();
+  }
+
   bool _isAnimate=false;
 
   @override
@@ -37,27 +49,28 @@ bool isSignIn=false;
   _handleGoogleBtnClick(){
 
     if(isSignIn)return;
-    Navigator.pop(context);
-    
+    //Navigator.pop(context);
+  
     isSignIn=true;
-    Dialogs.showProcessBar(context);
+  //  Navigator.pushReplacement(context,MaterialPageRoute(builder: (_) => const HomeScreen()));
+  //   Dialogs.showProcessBar(context);
 
     _signInWithGoogle().then( (user ) {
-      Navigator.pop(context);
-
+     // Navigator.pop(context);
      if( user != null){
       log('\nUser: ${user.user}');
       log('\nUserAdditonalInfo: ${user.additionalUserInfo}');
         Navigator.pushReplacement(context,MaterialPageRoute(builder: (_) => const HomeScreen()));
      }
 
-      
-    });
-
-    
+    });    
   }
 
   _signUpBtnClick() async {
+    String email=_emailController.text;
+    String password=_passwordController.text;
+     Dialogs.showSnackbar(context, 'Clicked ');
+     appUser=ChatUser(email: email, password: password);
     if((await APIs.userExists())){
       Navigator.pushReplacement(context,MaterialPageRoute(builder: (_) => const HomeScreen()));
     }else{
@@ -66,8 +79,6 @@ bool isSignIn=false;
       });
     }
   }
-
-  
 
 Future<UserCredential?> _signInWithGoogle() async {
   try{
@@ -95,43 +106,127 @@ Future<UserCredential?> _signInWithGoogle() async {
   }
 }
 
+@override
+Widget build(BuildContext context) {
+  mq = MediaQuery.of(context).size;
+  return Scaffold(
+    appBar: AppBar(
+      automaticallyImplyLeading: false,
+      title: const Text('Welcome to Rai Chat'),
+    ),
+    body: Center(
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),  // Adding some padding for spacing
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            // You can add an image at the top if needed
+            // AnimatedPositioned widget can be adjusted or removed based on your design
 
-  @override
-  Widget build(BuildContext context) {
-    mq= MediaQuery.of(context).size;
-    return Scaffold(
-      appBar: AppBar(
-        automaticallyImplyLeading: false,
-        title: const Text('Wellcome to rai chat'),  
-        ),
-        
-        body: Stack(children: [
-          AnimatedPositioned(
-            top: mq.height * .15,
-            right: _isAnimate ? mq.width * .25: -mq.width * .5,
-            width: mq.width * .5,
-            duration: const Duration(seconds: 2),
-            child: Image.asset('images/chat_login.png')),
-          Positioned(
-            bottom: mq.height * .15,
-            left: mq.width * .05,
-            width: mq.width * .9,
-            height: mq.height * .06,
-            child:ElevatedButton.icon(
-              style: ElevatedButton.styleFrom(backgroundColor: Colors.lightGreenAccent.shade100, shape: const StadiumBorder(),elevation: 1),
-              onPressed: (){
-                _handleGoogleBtnClick();
+            const SizedBox(height: 30),
+            TextField(
+              controller: _emailController,
+              decoration: const InputDecoration(
+                hintText: "Email",
+                border: OutlineInputBorder(),
+              ),
+            ),
+            const SizedBox(height: 30),
+            TextField(
+              controller: _passwordController,
+              obscureText: true, // Hides the password text
+              decoration: const InputDecoration(
+                hintText: "Password",
+                border: OutlineInputBorder(),
+              ),
+            ),
+            const SizedBox(height: 30),
+            ElevatedButton.icon(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.lightGreenAccent.shade100,
+                shape: const StadiumBorder(),
+                elevation: 1,
+              ),
+              onPressed: () {
+                //_handleGoogleBtnClick();
+                _signUpBtnClick();
               },
-              icon: Image.asset('images/google.png',height: mq.height * .06,),
+              // icon: Image.asset('images/google.png', height: mq.height * .06),
               label: RichText(
                 text: const TextSpan(
-                  style: TextStyle(color: Colors.black,fontSize: 16),
+                  style: TextStyle(color: Colors.black, fontSize: 16),
                   children: [
-                    TextSpan(text: 'signin with '),
-                    TextSpan(text: 'google',style: TextStyle(fontWeight: FontWeight.w500))
-                  ]
-                )),)),
-          ],),
-    );
-  }
+                    TextSpan(text: 'Sign in '),
+                    TextSpan(
+                        text: '',
+                        style: TextStyle(fontWeight: FontWeight.w500)),
+                  ],
+                ),
+              ),
+            ),
+          ],
+        ),
+      ), 
+    ),
+  );
+}
+
+  // @override
+  // Widget build(BuildContext context) {
+  //   mq= MediaQuery.of(context).size;
+  //   return Scaffold(
+  //     appBar: AppBar(
+  //       automaticallyImplyLeading: false,
+  //       title: const Text('Wellcome to rai chat'),  
+  //       ),
+        
+  //       body: Center(
+  //         child: Stack(children: [
+  //           // AnimatedPositioned(
+  //           //   top: mq.height * .15,
+  //           //   right: _isAnimate ? mq.width * .25: -mq.width * .5,
+  //           //   width: mq.width * .5,
+  //           //   duration: const Duration(seconds: 2),
+  //           //   child: Image.asset('images/chat_login.png')),
+  //              const SizedBox(height: 30),
+  //               TextField(
+  //                 controller: _emailController,
+  //                 decoration: const InputDecoration(
+  //                   hintText: "Email",
+  //                   border: OutlineInputBorder(),
+  //                 ),
+  //               ),
+  //               const SizedBox(height: 30),
+  //               TextField(
+  //                 controller: _passwordController,
+  //                 obscureText: true, // Hides the password text
+  //                 decoration: const InputDecoration(
+  //                   hintText: "Password",
+  //                   border: OutlineInputBorder(),
+  //                 ),
+  //               ),
+  //               const SizedBox(height: 30),
+  //           Positioned(
+  //             bottom: mq.height * .15,
+  //             left: mq.width * .05,
+  //             width: mq.width * .9,
+  //             height: mq.height * .06,
+  //             child:ElevatedButton.icon(
+  //               style: ElevatedButton.styleFrom(backgroundColor: Colors.lightGreenAccent.shade100, shape: const StadiumBorder(),elevation: 1),
+  //               onPressed: (){
+  //                 _handleGoogleBtnClick();
+  //               },
+  //               icon: Image.asset('images/google.png',height: mq.height * .06,),
+  //               label: RichText(
+  //                 text: const TextSpan(
+  //                   style: TextStyle(color: Colors.black,fontSize: 16),
+  //                   children: [
+  //                     TextSpan(text: 'signin with '),
+  //                     TextSpan(text: 'google',style: TextStyle(fontWeight: FontWeight.w500))
+  //                   ]
+  //                 )),)),
+  //           ],),
+  //       ),
+  //   );
+  // }
 }
