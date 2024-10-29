@@ -57,9 +57,9 @@ class _ChatUserCardState extends State<ChatUserCard> {
                   child: CachedNetworkImage(
                       height: mq.height * .055,
                       width: mq.height * .055,
-                      imageUrl: "http://via.placeholder.com/350x150",
-                      placeholder: (context, url) => CircularProgressIndicator(),
-                      errorWidget: (context, url, error) => Icon(Icons.error),
+                      imageUrl: widget.user.image!,
+                      //placeholder: (context, url) => CircularProgressIndicator(),
+                      errorWidget: (context, url, error) => const CircleAvatar(child: Icon(CupertinoIcons.person),),
                   ),
                 ),
                  title: Text(widget.user.email),
