@@ -47,6 +47,8 @@ class ChatUser {
       if (name != null) "name": name,
       if (pushToken != null) "push_token": pushToken,
            "password": password,
+      if (image != null) "image" :image,
+      if (id != null) "id" :id
     };
   }
 }

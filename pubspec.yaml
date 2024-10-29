@@ -40,6 +40,11 @@ dependencies:
   google_sign_in: ^6.2.1
   cloud_firestore: ^5.4.4
   cached_network_image: ^3.4.1
+  image_picker: ^1.1.2
+
+  #for accessing Firebase stroage (uploading )
+  firebase_storage: ^12.3.4
+  
 dev_dependencies:
   flutter_test:
     sdk: flutter

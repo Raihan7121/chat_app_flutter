@@ -4,6 +4,8 @@ import 'package:chat_app/models/chat_user.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
+import '../screens/chat_screen.dart';
+
 class ChatUserCard extends StatefulWidget {
   final ChatUser user;
   const ChatUserCard({super.key,required this.user});
@@ -44,6 +46,7 @@ class _ChatUserCardState extends State<ChatUserCard> {
             elevation: 4.0,
             child: InkWell(
               onTap: () {
+                Navigator.push(context, MaterialPageRoute(builder: (_) => ChatScreen(user: widget.user,))); 
                 // Action when tapped
                 //print('Card tapped');
               },
