@@ -50,7 +50,7 @@ static Future<void> getSelfInfo() async{
 
     return await firestore.collection('users').doc(appUser.email).set(chatUser.toJson());
   }
-
+//geting aii user
   static Stream<QuerySnapshot<Map<String,dynamic>>> getAllUsers(){
    // log(ChatUser.fromJson(firestore.collection('users').where('email', isEqualTo: appUser.email).snapshots()));
     return firestore.collection('users').where('email', isNotEqualTo: appUser.email).snapshots();
@@ -75,6 +75,15 @@ static Future<void> getSelfInfo() async{
 
     await firestore.collection('users').doc(appUser.email).update({
       'image':me.image});
+  }
+
+  ///******************  chat Screen Related APIs  ***********************
+
+
+  //all chat of user
+  static Stream<QuerySnapshot<Map<String,dynamic>>> getAllMessages(){
+   // log(ChatUser.fromJson(firestore.collection('users').where('email', isEqualTo: appUser.email).snapshots()));
+    return firestore.collection('messages').snapshots();
   }
 
 }
