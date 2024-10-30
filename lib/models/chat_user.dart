@@ -3,12 +3,12 @@ class ChatUser {
      required this.email,
      required this.password,
      this.about,
+     this.name,
      this.createdAt,
      this.id,
      this.image,
      this.isOnline,
      this.lastActive,
-     this.name,
      this.pushToken,  
   });
 
@@ -39,12 +39,12 @@ class ChatUser {
 
   Map<String, dynamic> toJson() {
     return {
-      if (about != null) "about": about,
+       "about": about,
       if (createdAt != null) "created_at": createdAt,
            "email": email,
       if (isOnline != null) "is_online": isOnline,
       if (lastActive != null) "last_active": lastActive,
-      if (name != null) "name": name,
+        "name": name,
       if (pushToken != null) "push_token": pushToken,
            "password": password,
       if (image != null) "image" :image,

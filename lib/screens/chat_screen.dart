@@ -98,7 +98,7 @@ class _ChatScreenState extends State<ChatScreen> {
                           });
                       }else{
                         return const Center(
-                          child: Text('No Connections Found!',
+                          child: Text('Say HII!',
                                   style: TextStyle(fontSize: 20),)
                         );
                       }
@@ -111,30 +111,30 @@ class _ChatScreenState extends State<ChatScreen> {
                 _chatInput(),
                 
                 //showing emojis on keyboard emoji button click & vice versa
-              //   Offstage(
-              //   offstage: !_showEmoji,
-              //   child: EmojiPicker(
-              //     textEditingController: _textController,
-              //     scrollController: _scrollController,
-              //     config: Config(
-              //       height: 256,
-              //       checkPlatformCompatibility: true,
-              //       viewOrderConfig: const ViewOrderConfig(),
-              //       emojiViewConfig: EmojiViewConfig(
-              //         // Issue: https://github.com/flutter/flutter/issues/28894
-              //         emojiSizeMax: 28 *
-              //             (foundation.defaultTargetPlatform ==
-              //                     TargetPlatform.iOS
-              //                 ? 1.2
-              //                 : 1.0),
-              //       ),
-              //       skinToneConfig: const SkinToneConfig(),
-              //       categoryViewConfig: const CategoryViewConfig(),
-              //       bottomActionBarConfig: const BottomActionBarConfig(),
-              //       searchViewConfig: const SearchViewConfig(),
-              //     ),
-              //   ),
-              // ),       
+                Offstage(
+                offstage: !_showEmoji,
+                child: EmojiPicker(
+                  textEditingController: _textController,
+                  scrollController: _scrollController,
+                  config: Config(
+                    height: 256,
+                    checkPlatformCompatibility: true,
+                    viewOrderConfig: const ViewOrderConfig(),
+                    emojiViewConfig: EmojiViewConfig(
+                      // Issue: https://github.com/flutter/flutter/issues/28894
+                      emojiSizeMax: 28 *
+                          (foundation.defaultTargetPlatform ==
+                                  TargetPlatform.iOS
+                              ? 1.2
+                              : 1.0),
+                    ),
+                    skinToneConfig: const SkinToneConfig(),
+                    categoryViewConfig: const CategoryViewConfig(),
+                    bottomActionBarConfig: const BottomActionBarConfig(),
+                    searchViewConfig: const SearchViewConfig(),
+                  ),
+                ),
+              ),       
                 
                 ],),
           ),

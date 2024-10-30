@@ -24,31 +24,7 @@ class _ChatUserCardState extends State<ChatUserCard> {
 
   @override
   Widget build(BuildContext context) {
-   // mq= MediaQuery.of(context).size;
-  //   return Card(
-  //     margin: EdgeInsets.symmetric(horizontal: mq.width * 0.4,vertical: 4),
-  //     //color: Colors.blue.shade100,
-  //     elevation: 0.5,
-  //     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
-  //     child: InkWell(
-  //       onTap: () {},
-  //       child: const ListTile(
-  //         //user profile picture
-  //         leading: Icon(Icons.person),
-
-  //         //uaer name 
-  //         title: Text('Demo user'),
-
-  //         //jlast message 
-  //         subtitle: Text('Last User message',maxLines: 1,),
-
-  //         //last messafge tjime
-  //         trailing: Text('12:12PM',
-  //                     style: TextStyle(color: Colors.black54),), 
-  //       ),
-  //     ),
-  //   );
-  // }
+   
   return Card(
             elevation: 4.0,
             child: InkWell(
@@ -61,15 +37,20 @@ class _ChatUserCardState extends State<ChatUserCard> {
                 stream: APIs.getLastMessage(widget.user),
                  builder: (context,snapshot) {
 
-                    final data = snapshot.data?.docs;
-                    final list = data?.map((e) => Message.fromJson(e.data())).toList() ?? [];
+                     if (snapshot.hasData && snapshot.data!.docs.isNotEmpty) {
+                        final data = snapshot.data?.docs;
+                        final list = data?.map((e) => Message.fromJson(e.data())).toList() ?? [];
 
-                    if(list.isNotEmpty) _message = list[0];
+                        if(list.isNotEmpty) _message = list[0];
 
-                    if(data != null && data.first.exists){
-                      _message = Message.fromJson(data.first.data());
-                    }
+                        if(data != null && data.first.exists){
+                          _message = Message.fromJson(data.first.data());
+                        }
 
+                      } else {
+                        _message = null; // No message
+                      }
+                    
                     return ListTile(
                // leading: Icon(Icons.account_circle),
                 leading:ClipRRect(
