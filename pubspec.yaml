@@ -44,7 +44,10 @@ dependencies:
 
   #for accessing Firebase stroage (uploading )
   firebase_storage: ^12.3.4
-  
+  #for date conversion
+  intl: ^0.17.0
+  #for showing Emoji
+  emoji_picker_flutter: ^3.1.0
 dev_dependencies:
   flutter_test:
     sdk: flutter

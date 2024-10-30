@@ -1,9 +1,17 @@
+import 'dart:io';
+import 'package:emoji_picker_flutter/emoji_picker_flutter.dart';
+import 'package:flutter/foundation.dart' as foundation;
+import 'package:flutter/material.dart';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:chat_app/api/apis.dart';
 import 'package:chat_app/main.dart';
 import 'package:chat_app/models/chat_user.dart';
+import 'package:chat_app/models/message.dart';
+import 'package:chat_app/widgets/message_card.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
+
+//import 'package:flutter/foundation.dart' as foundation;
 
 class ChatScreen extends StatefulWidget {
   final ChatUser user;
@@ -14,61 +22,123 @@ class ChatScreen extends StatefulWidget {
 }
 
 class _ChatScreenState extends State<ChatScreen> {
+  //for storing all messages
+  List<Message> _list = [];
+
+//for handling  message text changes
+  final _textController = TextEditingController();
+  final _scrollController = ScrollController();
+  //for storing value of showing or hiding emoji
+  bool _showEmoji = false;
+
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Scaffold(
-        appBar: AppBar(
-          automaticallyImplyLeading: false, //remove the back icon
-          flexibleSpace: _appBar(),
-        ),
-        body: Column(
-          children: [
-            Expanded(
-              child: StreamBuilder(
-                stream: APIs.getAllMessages(),
-                builder: (context ,snapshot){
-                  if (snapshot.connectionState == ConnectionState.waiting) {
-                  return const AlertDialog(
-                    content: CircularProgressIndicator(),
-                  );
-                }
-                if (snapshot.hasError) {
-                  return AlertDialog(
-                    content: Text('Error: ${snapshot.error}'),
-                  );
-                }
-                      
-                final _list = ["hii" , "hello"];
-                  if(snapshot.hasData){
-                    final data = snapshot.data?.docs;
-                      
-                   // _list =data?.map((e) => ChatUser.fromJson(e.data())).toList() ?? [];
-                  
-                  }
-                  if(_list.isNotEmpty){
-                      return ListView.builder(
-                      itemCount: _list.length,
-                      padding: EdgeInsets.only(top: mq.height * .01),
-                      physics: const BouncingScrollPhysics(),
-                      itemBuilder: (context, index) {
-                       // return ChatUserCard(user: _isSearching? _searchList[index] : _list[index]);
-                        return Text('Message: ${_list[index]}');
-                      });
-                  }else{
-                    return const Center(
-                      child: Text('No Connections Found!',
-                              style: TextStyle(fontSize: 20),)
-                    );
-                  }
-                  
-                }
-              ),
+    return GestureDetector(
+      onTap: () => Focus.of(context).unfocus(),
+      child: SafeArea(
+        child: WillPopScope(
+          //if emoji are shown & back button is pressed then hide emoji
+          //or else simple close current screen on back button click
+          onWillPop: (){
+          if(_showEmoji){
+            setState(() {
+              _showEmoji = !_showEmoji;
+            });
+            return Future.value(false);
+          }else{
+            return Future.value(true);
+          }
+          
+        },
+          child: Scaffold(
+            appBar: AppBar(
+              automaticallyImplyLeading: false, //remove the back icon
+              flexibleSpace: _appBar(),
             ),
-
-            _chatInput()
-            
-            ],),
+                
+            backgroundColor: const Color.fromARGB(255, 234, 248, 255),
+                
+            body: Column(
+              children: [
+                Expanded(
+                  child: StreamBuilder(
+                    stream: APIs.getAllMessages(widget.user),
+                    builder: (context ,snapshot){
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                      // return const AlertDialog(
+                      //   content: CircularProgressIndicator(),
+                      // );
+                      return const SizedBox();
+                    }
+                    if (snapshot.hasError) {
+                      return const SizedBox();
+                      // return AlertDialog(
+                      //   content: Text('Error: ${snapshot.error}'),
+                      // );
+                    }
+                  
+                          
+                    //final _list = ["hii" , "hello"];
+                      if(snapshot.hasData){
+                        final data = snapshot.data?.docs;
+                          
+                       _list =data?.map((e) => Message.fromJson(e.data())).toList() ?? [];
+                      
+                      }
+                
+                
+                      if(_list.isNotEmpty){
+                          return ListView.builder(
+                          itemCount: _list.length,
+                          padding: EdgeInsets.only(top: mq.height * .01),
+                          physics: const BouncingScrollPhysics(),
+                          itemBuilder: (context, index) {
+                           // return ChatUserCard(user: _isSearching? _searchList[index] : _list[index]);
+                            return MessageCard(message: _list[index]);
+                          });
+                      }else{
+                        return const Center(
+                          child: Text('No Connections Found!',
+                                  style: TextStyle(fontSize: 20),)
+                        );
+                      }
+                      
+                    }
+                  ),
+                ),
+                
+                  //chat user input filed
+                _chatInput(),
+                
+                //showing emojis on keyboard emoji button click & vice versa
+              //   Offstage(
+              //   offstage: !_showEmoji,
+              //   child: EmojiPicker(
+              //     textEditingController: _textController,
+              //     scrollController: _scrollController,
+              //     config: Config(
+              //       height: 256,
+              //       checkPlatformCompatibility: true,
+              //       viewOrderConfig: const ViewOrderConfig(),
+              //       emojiViewConfig: EmojiViewConfig(
+              //         // Issue: https://github.com/flutter/flutter/issues/28894
+              //         emojiSizeMax: 28 *
+              //             (foundation.defaultTargetPlatform ==
+              //                     TargetPlatform.iOS
+              //                 ? 1.2
+              //                 : 1.0),
+              //       ),
+              //       skinToneConfig: const SkinToneConfig(),
+              //       categoryViewConfig: const CategoryViewConfig(),
+              //       bottomActionBarConfig: const BottomActionBarConfig(),
+              //       searchViewConfig: const SearchViewConfig(),
+              //     ),
+              //   ),
+              // ),       
+                
+                ],),
+          ),
+        ),
       ),
     );
   }
@@ -125,13 +195,21 @@ class _ChatScreenState extends State<ChatScreen> {
             child: Row(
               children: [
                  //emoji button
-                 IconButton(onPressed: () {}, 
+                 IconButton(onPressed: () {
+                  FocusScope.of(context).unfocus();
+                  setState(() => _showEmoji = !_showEmoji );
+                 }, 
                  icon: Icon(Icons.emoji_emotions, color:  Colors.blueAccent,size: 25,)),
             
-                 Expanded(child: TextField(
+                 Expanded(
+                  child: TextField(
+                  controller: _textController,
                   keyboardType: TextInputType.multiline,
                   maxLines: null,
-                  decoration: InputDecoration(
+                  onTap: () {
+                    if(_showEmoji)setState(() => _showEmoji = !_showEmoji );
+                  },
+                  decoration:const InputDecoration(
                     hintText: 'Type Something...',
                     hintStyle: TextStyle(color: Colors.blueAccent, ),
                     border: InputBorder.none
@@ -154,7 +232,12 @@ class _ChatScreenState extends State<ChatScreen> {
           SizedBox(width: mq.width * .02,),
       
           //esnd message button
-          MaterialButton(onPressed: () {},
+          MaterialButton(onPressed: () {
+            if(_textController.text.isNotEmpty){
+              APIs.sendMessage(widget.user, _textController.text);
+              _textController.text ='';
+            }
+          },
           minWidth: 0,
           padding:const EdgeInsets.only(top: 10,bottom: 10,right: 5,left: 10),
           shape: const CircleBorder(),
