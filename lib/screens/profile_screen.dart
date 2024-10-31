@@ -10,6 +10,7 @@ import 'package:chat_app/helper/dialogs.dart';
 import 'package:chat_app/main.dart';
 import 'package:chat_app/models/chat_user.dart';
 import 'package:chat_app/screens/auth/login.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
@@ -70,7 +71,7 @@ String? _image;
                                   height: mq.height * .2,
                                   width: mq.height * .2,
                                   fit: BoxFit.cover,
-                                  imageUrl: "http://via.placeholder.com/350x150",
+                                  imageUrl: widget.user.image !=null ? widget.user.image! :"http://via.placeholder.com/350x150",
                                   // placeholder: (context, url) => CircularProgressIndicator(),
                                    errorWidget: (context, url, error) => const CircleAvatar(child: Icon(CupertinoIcons.person),),
                               ),
@@ -154,7 +155,7 @@ String? _image;
             child: FloatingActionButton.extended(
               backgroundColor: Colors.redAccent,
               onPressed: () async {
-              
+              await APIs.updateActiveStatus(false);
               Dialogs.showProcessBar(context);
               await APIs.auth.signOut().then((Value) async{
                 // await GoogleSignIn().signOut();
@@ -162,6 +163,7 @@ String? _image;
                 Navigator.pop(context);
                 //pop up login screen
                 Navigator.pop(context);
+                APIs.auth = FirebaseAuth.instance;
                 Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => LoginScreen()));
               }); 
              

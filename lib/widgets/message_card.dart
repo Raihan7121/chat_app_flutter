@@ -1,8 +1,10 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:chat_app/api/apis.dart';
 import 'package:chat_app/helper/my_date_util.dart';
 import 'package:chat_app/main.dart';
 import 'package:chat_app/models/chat_user.dart';
 import 'package:chat_app/models/message.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class MessageCard extends StatefulWidget {
@@ -28,9 +30,11 @@ class _MessageCardState extends State<MessageCard> {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
+
+        //text message content
         Flexible(
           child: Container(
-            padding: EdgeInsets.all(mq.width * .04),
+            padding: EdgeInsets.all(widget.message.type == Type.image ? mq.width * .04 : mq.width * .04),
             margin: EdgeInsets.symmetric(horizontal: mq.width *.04,vertical: mq.height * .01),
             decoration: BoxDecoration(color: Colors.blue.shade100,
             border: Border.all(color: Colors.lightBlue),
@@ -39,8 +43,28 @@ class _MessageCardState extends State<MessageCard> {
               topRight: Radius.circular(30),
              // bottomLeft: Radius.circular(30),
               bottomRight: Radius.circular(30))),
-            child: Text(widget.message.msg,
-            style: const TextStyle(fontSize: 15,color: Colors.black87),),
+            child:
+            widget.message.type == Type.text ?
+
+              //show text
+             Text(widget.message.msg,
+            style: const TextStyle(fontSize: 15,color: Colors.black87),)
+
+            : 
+            //image message
+            ClipRRect(
+                        borderRadius: BorderRadius.circular(15),
+                        child: CachedNetworkImage(
+                            // height: mq.height * .05,
+                            // width: mq.height * .05,
+                            imageUrl: widget.message.msg,
+                            placeholder: (context, url) =>const Padding(
+                              padding:  EdgeInsets.all(8.0),
+                              child: CircularProgressIndicator(strokeWidth: 2,),
+                            ),
+                            errorWidget: (context, url, error) => const Icon(Icons.image ,size: 70),
+                        ),
+                      ),
           
           ),
         ),
@@ -81,7 +105,7 @@ class _MessageCardState extends State<MessageCard> {
         //message content
         Flexible(
           child: Container(
-            padding: EdgeInsets.all(mq.width * .04),
+            padding: EdgeInsets.all(widget.message.type == Type.image ? mq.width * .04 : mq.width * .04),
             margin: EdgeInsets.symmetric(horizontal: mq.width *.04,vertical: mq.height * .01),
             decoration: BoxDecoration(color: Colors.lightGreen.shade100,
             border: Border.all(color: Colors.lightBlue),
@@ -91,8 +115,27 @@ class _MessageCardState extends State<MessageCard> {
               bottomLeft: Radius.circular(30),
              // bottomRight: Radius.circular(30)
               )),
-            child: Text(widget.message.msg,
-            style: const TextStyle(fontSize: 15,color: Colors.black87),),
+            child:  widget.message.type == Type.text ?
+
+              //show text
+             Text(widget.message.msg,
+            style: const TextStyle(fontSize: 15,color: Colors.black87),)
+
+            : 
+            //image message
+            ClipRRect(
+                        borderRadius: BorderRadius.circular(15),
+                        child: CachedNetworkImage(
+                            // height: mq.height * .05,
+                            // width: mq.height * .05,
+                            imageUrl: widget.message.msg,
+                            placeholder: (context, url) => const Padding(
+                              padding: EdgeInsets.all(8.0),
+                              child: CircularProgressIndicator(strokeWidth: 2,),
+                            ),
+                            errorWidget: (context, url, error) => const Icon(Icons.image ,size: 70),
+                        ),
+                      ),
           
           ),
         ),
